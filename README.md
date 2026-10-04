@@ -1,4 +1,4 @@
-# rajeshmayilsamy-git.github.io
+# rajeshmayilsamy.xyz
 
 Personal site for Rajesh Mayilsamy — MSc Aeronautical Engineering, Linköping University.
 CFD, turbomachinery, gas turbines and aircraft conceptual design.
@@ -12,6 +12,7 @@ Plain HTML, CSS and JavaScript. No build step: edit the files and push.
 | `main.js` | the WebGL turbine, the flow-field background and the portrait cut-out |
 | `assets/photo.jpg` | source portrait; the white backdrop is keyed out in the browser |
 | `assets/projects/` | figures shown on the project cards |
+| `CNAME` | the custom domain; deleting it reverts the site to the github.io address |
 
 Three.js is loaded from a CDN, so the page needs an internet connection.
 
