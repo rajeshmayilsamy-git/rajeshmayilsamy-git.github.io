@@ -77,17 +77,19 @@ const orb = $('#orb');
   const cv = $('#flow'), ctx = cv.getContext('2d');
   let parts = [];
   const U = 2.4, CURSOR_R = 55;
-  const spawn = any => ({
-    x: any ? Math.random() * innerWidth : -10,
-    y: Math.random() * innerHeight,
-    life: Math.random() * 300
-  });
+  // Each particle keeps its own short trail and the canvas is cleared every
+  // frame. (Fading with a translucent overlay instead leaves permanent faint
+  // streaks: 8-bit colour can't decay the last few levels to true black.)
+  const TRAIL = 14;
+  const spawn = any => {
+    const x = any ? Math.random() * innerWidth : -10, y = Math.random() * innerHeight;
+    return { x, y, life: Math.random() * 300, tx: new Float32Array(TRAIL).fill(x), ty: new Float32Array(TRAIL).fill(y), head: 0, sp: 1 };
+  };
   function resize() {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = '#0a080d'; ctx.fillRect(0, 0, innerWidth, innerHeight);
-    parts = Array.from({ length: Math.min(1100, Math.floor(innerWidth * innerHeight / 1800)) }, () => spawn(true));
+    parts = Array.from({ length: Math.min(900, Math.floor(innerWidth * innerHeight / 2000)) }, () => spawn(true));
   }
   addEventListener('resize', resize); resize();
 
@@ -108,9 +110,9 @@ const orb = $('#orb');
     readBall();
     cx += (ptr.px - cx) * .14; cy += (ptr.py - cy) * .14;
 
-    ctx.fillStyle = 'rgba(10,8,13,.085)';
-    ctx.fillRect(0, 0, innerWidth, innerHeight);
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
     ctx.lineWidth = 1;
+    ctx.lineCap = 'round';
 
     for (const p of parts) {
       let u = U, v = 0, inside = false;
@@ -127,11 +129,18 @@ const orb = $('#orb');
       }
       if (inside) { Object.assign(p, spawn(false), { life: 0 }); continue; }
 
-      const nx = p.x + u, ny = p.y + v;
-      const sp = Math.min(Math.hypot(u, v) / U, 2);
-      ctx.strokeStyle = `hsla(${268 + sp * 34},95%,${64 + sp * 6}%,${.16 + sp * .2})`;
-      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(nx, ny); ctx.stroke();
-      p.x = nx; p.y = ny;
+      p.x += u; p.y += v;
+      p.head = (p.head + 1) % TRAIL;
+      p.tx[p.head] = p.x; p.ty[p.head] = p.y;
+      p.sp += (Math.min(Math.hypot(u, v) / U, 2) - p.sp) * .2;
+
+      // trail from oldest to newest point
+      ctx.strokeStyle = `hsla(${268 + p.sp * 34},95%,${64 + p.sp * 6}%,${.14 + p.sp * .18})`;
+      ctx.beginPath();
+      let i = (p.head + 1) % TRAIL;
+      ctx.moveTo(p.tx[i], p.ty[i]);
+      for (let k = 1; k < TRAIL; k++) { i = (i + 1) % TRAIL; ctx.lineTo(p.tx[i], p.ty[i]); }
+      ctx.stroke();
 
       if (p.x > innerWidth + 10 || p.y < -10 || p.y > innerHeight + 10 || ++p.life > 700) {
         Object.assign(p, spawn(false), { life: 0 });
