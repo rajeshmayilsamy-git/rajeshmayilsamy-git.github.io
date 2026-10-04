@@ -13,13 +13,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
 <canvas id="flow" aria-hidden="true"></canvas>
-<canvas id="gl" aria-hidden="true"></canvas>
 <div class="vignette" aria-hidden="true"></div>
-<div class="loader" id="loader"><span>RM</span></div>
 
 <header class="nav">
   <a href="#top" class="logo">RM<b>.</b></a>
@@ -37,21 +34,26 @@
 
 <main id="top">
   <section class="hero">
-    <div class="portrait" id="portrait"><canvas id="cut"></canvas></div>
-    <div class="hello">
-      <p class="hi">Hello! I'm</p>
-      <h1>RAJESH<br>MAYILSAMY</h1>
-    </div>
-    <div class="role">
-      <p class="an">An</p>
-      <div class="roles" id="roles">
-        <span class="on">AEROSPACE ENGINEER</span>
-        <span>CFD SPECIALIST</span>
-        <span>AIRCRAFT DESIGNER</span>
-        <span>FLUID DYNAMICIST</span>
+    <div class="hero-inner">
+      <div class="hello">
+        <p class="hi">Hello! I'm</p>
+        <h1>RAJESH<br>MAYILSAMY</h1>
+      </div>
+      <div class="orb" id="orb" aria-hidden="true"></div>
+      <div class="role">
+        <p class="an">An</p>
+        <div class="roles" id="roles">
+          <span class="on">AEROSPACE ENGINEER</span>
+          <span>CFD SPECIALIST</span>
+          <span>AIRCRAFT DESIGNER</span>
+          <span>FLUID DYNAMICIST</span>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <a class="btn primary" href="#work">Explore my work <span>&rarr;</span></a>
+        <a class="btn ghost" href="assets/Rajesh_Mayilsamy_CV.pdf" target="_blank" rel="noopener">Resume <svg viewBox="0 0 24 24"><path d="M6 2h8l6 6v14H6V2zm7 1.5V9h5.5L13 3.5zM8.5 13h7v1.5h-7V13zm0 3.5h7V18h-7v-1.5z"/></svg></a>
       </div>
     </div>
-    <a class="resume" href="assets/Rajesh_Mayilsamy_CV.pdf" target="_blank" rel="noopener">RESUME <svg viewBox="0 0 24 24"><path d="M6 2h8l6 6v14H6V2zm7 1.5V9h5.5L13 3.5zM8.5 13h7v1.5h-7V13zm0 3.5h7V18h-7v-1.5z"/></svg></a>
   </section>
 
   <section id="about" class="section">
@@ -122,7 +124,7 @@
   </section>
 </main>
 
-<footer><span>© <span id="yr"></span> Rajesh Mayilsamy</span><span class="mono">Built with Three.js</span></footer>
+<footer><span>© <span id="yr"></span> Rajesh Mayilsamy</span><span class="mono">Hand-built. The background is potential flow around your cursor.</span></footer>
 
 <script type="module" src="main.js"></script>
 </body>

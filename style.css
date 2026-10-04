@@ -12,16 +12,10 @@ a{color:inherit;text-decoration:none}
 .mono{font-family:var(--mono);font-size:.78rem;color:var(--mut)}
 
 #flow{position:fixed;inset:0;width:100%;height:100%;z-index:-3;background:var(--bg)}
-#gl{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
 .vignette{position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:radial-gradient(60vw 40vw at 0% 0%,rgba(139,92,246,.35),transparent 70%),
              radial-gradient(40vw 40vw at 100% 40%,rgba(232,121,249,.22),transparent 70%),
              radial-gradient(70vw 30vw at 50% 110%,rgba(139,92,246,.35),transparent 70%)}
-.loader{position:fixed;inset:0;z-index:200;background:var(--bg);display:grid;place-items:center;font-weight:800;font-size:3rem;transition:opacity .8s .2s,visibility .8s .2s}
-.loader span{color:var(--lilac);animation:pulse 1s ease-in-out infinite alternate}
-.loader.done{opacity:0;visibility:hidden}
-@keyframes pulse{to{opacity:.3;transform:scale(.94)}}
-
 .glass{background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:0 20px 60px -25px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08)}
 
 /* nav */
@@ -33,7 +27,7 @@ a{color:inherit;text-decoration:none}
 .nav a:hover{color:var(--lilac)}
 
 .social{position:fixed;left:clamp(1rem,2.4vw,2.4rem);bottom:2rem;z-index:60;display:flex;flex-direction:column;gap:1.5rem}
-.social svg,.resume svg{width:26px;height:26px;fill:currentColor;display:block}
+.social svg{width:26px;height:26px;fill:currentColor;display:block}
 .social a{opacity:.9;transition:.25s}
 .social a:hover{color:var(--lilac);transform:translateX(4px)}
 
@@ -41,32 +35,35 @@ main{position:relative;z-index:2}
 .section{padding:clamp(4.5rem,10vw,9rem) clamp(1.2rem,6vw,6rem);max-width:1250px;margin:0 auto}
 .label{font-family:var(--mono);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lilac);margin-bottom:1.6rem}
 
-/* hero */
-.hero{position:relative;height:100vh;min-height:620px;pointer-events:none}
-.hello{position:absolute;left:clamp(4rem,8vw,9rem);top:34%}
-.hi{font-size:clamp(1.1rem,1.8vw,1.6rem);letter-spacing:.08em;color:var(--lilac);font-weight:300}
-.hero h1{font-size:clamp(1.8rem,3.3vw,3.1rem);font-weight:400;letter-spacing:.05em;line-height:1.02;margin-top:.3rem}
-.hello>*,.role>*,.resume{animation:in 1.1s cubic-bezier(.2,.8,.2,1) both}
-.hi{animation-delay:.9s}.hero h1{animation-delay:1.05s}.role>*{animation-delay:1.3s}.resume{animation-delay:1.7s}
+/* hero — type only, centred, since the portrait and turbine were removed */
+.hero{position:relative;min-height:100vh;display:grid;place-items:center;padding:6rem clamp(1.2rem,6vw,6rem) 3.5rem;text-align:center}
+.hero-inner{max-width:60rem}
+.hi{font-size:clamp(1rem,1.5vw,1.35rem);letter-spacing:.08em;color:var(--lilac);font-weight:300}
+.hero h1{font-size:clamp(2.2rem,5.6vw,4.6rem);font-weight:800;letter-spacing:-.03em;line-height:.98;margin-top:.3rem}
+.hello>*,.role>*,.hero-cta{animation:in 1.1s cubic-bezier(.2,.8,.2,1) both}
+.hi{animation-delay:.15s}.hero h1{animation-delay:.3s}.role>*{animation-delay:.55s}.hero-cta{animation-delay:.8s}
 @keyframes in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
-.portrait{position:absolute;left:50%;bottom:-6vh;transform:translateX(-50%);height:min(88vh,720px);
-  will-change:transform;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
-.portrait canvas{display:block;height:100%;width:auto;opacity:0;position:relative;z-index:1}
-/* glow behind the cut-out instead of a drop-shadow filter (filters are fragile here) */
-.portrait::after{content:"";position:absolute;left:50%;top:30%;width:130%;height:60%;transform:translate(-50%,-50%);
-  background:radial-gradient(closest-side,rgba(139,92,246,.45),rgba(139,92,246,0) 75%);pointer-events:none}
-
-.role{position:absolute;right:clamp(1.2rem,4vw,5rem);top:40%;text-align:right;width:min(26rem,36vw)}
-.an{font-size:clamp(1.1rem,1.8vw,1.6rem);letter-spacing:.08em;color:var(--lilac)}
-.roles{position:relative;height:clamp(3rem,5vw,4.6rem);margin-top:.2rem}
-.roles span{position:absolute;right:0;top:0;white-space:nowrap;font-size:clamp(1.3rem,2.5vw,2.4rem);font-weight:500;letter-spacing:.04em;opacity:0;transform:translateY(60%);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1),color .7s}
+.role{margin-top:1.4rem}
+.an{font-size:clamp(.95rem,1.4vw,1.25rem);letter-spacing:.08em;color:var(--lilac)}
+.roles{position:relative;height:clamp(2.2rem,3.8vw,3.2rem);margin-top:.15rem}
+.roles span{position:absolute;left:0;right:0;top:0;white-space:nowrap;font-size:clamp(1.25rem,2.7vw,2.25rem);font-weight:500;letter-spacing:.04em;opacity:0;transform:translateY(60%);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1),color .7s}
 .roles span.on{opacity:1;transform:none}
 .roles span.off{opacity:0;transform:translateY(-70%);color:var(--purple)}
 
-.resume{position:absolute;right:clamp(1.2rem,3vw,2.6rem);bottom:2rem;display:flex;gap:.6rem;align-items:center;font-weight:600;letter-spacing:.3em;color:var(--mut);pointer-events:auto;transition:.25s}
-.resume svg{width:18px;height:18px}
-.resume:hover{color:var(--lilac)}
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem}
+.btn{display:inline-flex;gap:.6rem;align-items:center;padding:.95rem 1.8rem;border-radius:100px;font-weight:500;font-size:.95rem;transition:.3s}
+.btn svg{width:18px;height:18px;fill:currentColor}
+.btn.primary{background:linear-gradient(100deg,var(--lilac),var(--purple));color:#0a080d;font-weight:600;box-shadow:0 14px 44px -12px var(--purple)}
+.btn.primary:hover{transform:translateY(-3px);box-shadow:0 20px 54px -12px var(--lilac)}
+.btn.primary span{transition:transform .3s}.btn.primary:hover span{transform:translateX(5px)}
+.btn.ghost{border:1px solid var(--stroke);background:var(--glass);backdrop-filter:blur(16px);color:var(--fg)}
+.btn.ghost:hover{border-color:var(--lilac);color:var(--lilac);transform:translateY(-3px)}
+
+/* the sphere the airflow bends around; main.js reads its rect to place the obstacle */
+.orb{width:clamp(125px,14.5vw,205px);aspect-ratio:1;border-radius:50%;margin:1.5rem auto;pointer-events:none;
+  background:radial-gradient(circle at 38% 32%,#fff 2%,rgba(233,224,255,.95) 14%,rgba(183,156,255,.85) 38%,rgba(118,78,214,.75) 62%,rgba(74,45,148,.6) 82%,rgba(42,22,92,.35) 100%);
+  box-shadow:0 0 90px -10px rgba(139,92,246,.75),0 24px 60px -18px rgba(0,0,0,.8),inset -14px -18px 40px rgba(28,14,64,.55)}
 
 /* about */
 .about{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:start}
@@ -131,14 +128,11 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;fl
 @media (max-width:900px){
   .nav{display:flex;justify-content:space-between;gap:.5rem;padding:1.1rem 1rem}.nav-mail{display:none}
   .nav nav{gap:.9rem;font-size:.68rem;letter-spacing:.04em;min-width:0}
-  .hello{left:1.4rem;top:11%}
-  .hero h1{font-size:1.75rem}
-  .role{right:auto;left:1.4rem;top:25%;bottom:auto;text-align:left;width:auto}
-  .roles span{right:auto;left:0;font-size:1.2rem}
-  .roles span{font-size:1.5rem}
-  .portrait{height:min(50vh,400px);bottom:3rem}
+  .hero{padding-bottom:7rem}
+  .roles span{font-size:1.4rem;white-space:normal}
+  .roles{height:3.4rem}
+  .orb{width:min(46vw,170px);margin:1.6rem auto}
   .social{flex-direction:row;left:50%;bottom:1rem;transform:translateX(-50%);gap:1.6rem}
-  .resume{display:none}
   .about,.cards{grid-template-columns:1fr}
   .stats{grid-template-columns:repeat(2,1fr)}
   .vignette{opacity:.8}
@@ -146,6 +140,6 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;fl
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *{animation:none!important;transition:none!important}
-  .hello>*,.role>*,.resume{opacity:1}
+  .hello>*,.role>*,.hero-cta{opacity:1}
   .rv{opacity:1;transform:none}
 }
