@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 <canvas id="flow" aria-hidden="true"></canvas>
@@ -104,9 +104,9 @@
   <section id="work" class="section">
     <p class="label">04 — Selected work</p>
     <div class="cards">
-      <article class="glass card tilt rv"><img src="assets/projects/les-q-criterion.png" alt="Q-criterion isosurfaces of the turbulent vortices over the periodic hill, coloured by velocity magnitude" loading="lazy"><span class="num">01</span><time>Spring – Summer 2026</time><h3>Large Eddy Simulation of Periodic Hill Flow</h3><p>LES at Re<sub>H</sub> = 10,595 in ANSYS Fluent on the Tetralith cluster via SLURM. Debugged journal-file workflows, extracted benchmark data from Krank (2018), Fröhlich (2005) and Breuer (2009), and built MATLAB scripts for TKE profile comparison.</p><div class="tags"><span>LES</span><span>Fluent</span><span>HPC</span><span>MATLAB</span></div></article>
+      <article class="glass card tilt rv"><img src="assets/projects/les-velocity.jpg" alt="Instantaneous velocity magnitude over the periodic hill at z/H = 2.21 from the LES, showing the separated shear layer and recirculation behind the hill" loading="lazy"><span class="num">01</span><time>Spring – Summer 2026</time><h3>Large Eddy Simulation of Periodic Hill Flow</h3><p>LES at Re<sub>H</sub> = 10,595 in ANSYS Fluent on the Tetralith cluster via SLURM. Debugged journal-file workflows, extracted benchmark data from Krank (2018), Fröhlich (2005) and Breuer (2009), and built MATLAB scripts for TKE profile comparison.</p><div class="tags"><span>LES</span><span>Fluent</span><span>HPC</span><span>MATLAB</span></div></article>
       <article class="glass card tilt rv"><video class="media" src="assets/projects/viv-cylinder.mp4" poster="assets/projects/viv-cylinder-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Velocity magnitude around an oscillating cylinder on a dynamic mesh, showing the vortex street"></video><span class="num">02</span><time>Apr – May 2026</time><h3>Vortex-Induced Vibration of Bluff Bodies</h3><p>2D URANS (SST k-ω) of a cylinder, triangle, rhombus and 45° square at Re<sub>D</sub> = 10,000, with iterative POD analysis in MATLAB comparing LES and URANS wakes.</p><div class="tags"><span>URANS</span><span>SST k-ω</span><span>POD</span><span>FSI</span></div></article>
-      <article class="glass card tilt rv"><img src="assets/projects/falcon.png" alt="FALCON v3 tilt-rotor VTOL concept" loading="lazy"><span class="num">03</span><time>Mar – Jun 2026</time><h3>FALCON v3: VTOL Delivery Drone</h3><p>Tilt-rotor, twin-boom H-tail concept for Bussgods: 160 km round trip in northern Sweden with a 20 kg payload. Range and endurance, CG sweep, specific excess power, payload-range, cold-weather battery derating and propulsion selection.</p><div class="tags"><span>Conceptual design</span><span>MATLAB</span><span>VTOL</span></div></article>
+      <article class="glass card tilt rv"><img src="assets/projects/falcon-v3.jpg" alt="CATIA model of the FALCON v3 tilt-rotor VTOL delivery drone, with a human operator for scale" loading="lazy"><span class="num">03</span><time>Mar – Jun 2026</time><h3>FALCON v3: VTOL Delivery Drone</h3><p>Tilt-rotor, twin-boom H-tail concept for Bussgods: 160 km round trip in northern Sweden with a 20 kg payload. Range and endurance, CG sweep, specific excess power, payload-range, cold-weather battery derating and propulsion selection.</p><div class="tags"><span>Conceptual design</span><span>MATLAB</span><span>VTOL</span></div></article>
       <article class="glass card tilt rv"><img src="assets/projects/cybertruck-skin-friction.jpg" alt="Skin-friction coefficient on the Cybertruck surface, baseline SST model compared with the standard k-epsilon model" loading="lazy"><span class="num">04</span><time>Mar 2026</time><h3>Cybertruck External Aerodynamics</h3><p>CFD of a Tesla Cybertruck geometry in ANSYS Fluent, verified and validated against SBES reference data with a drag and lift coefficient comparison and percentage errors. Skin-friction distributions compare the SST and standard k-ε turbulence models.</p><div class="tags"><span>External aero</span><span>Fluent</span><span>V&amp;V</span></div></article>
       <article class="glass card tilt rv"><img src="assets/projects/rear-wing-flap-velocity.jpg" alt="Velocity streamlines around the two-element rear wing at 45 degrees flap deflection, showing flow separation off the flap" loading="lazy"><span class="num">05</span><time>2026</time><h3>Two-Element Rear Wing Optimisation</h3><p>CFD-driven optimisation using design of experiments, response-surface modelling and multi-objective genetic algorithms (MOGA), plus a Fowler flap sweep. Shown: velocity streamlines at 45° flap deflection, where the flow separates off the flap.</p><div class="tags"><span>DoE</span><span>Surrogate</span><span>MOGA</span><span>Motorsport aero</span></div></article>
       <article class="glass card tilt rv"><img src="assets/projects/a360-streamlines.jpg" alt="A360 narrow-body aircraft model coloured by surface pressure, with streamlines trailing from the wings and tail" loading="lazy"><span class="num">06</span><time>2026</time><h3>A360 Narrow-Body Aircraft Family</h3><p>Conceptual design of a 244-seat baseline and a 224-seat variant for a Delhi–London Heathrow mission: payload-range, specific excess power, drag build-up, static margin and engine scaling.</p><div class="tags"><span>Aircraft design</span><span>Payload-range</span><span>SEP</span></div></article>
@@ -122,8 +122,51 @@
     </div>
   </section>
 
+  <section id="courses" class="section">
+    <p class="label">05 — Courses &amp; Certifications</p>
+    <div class="courses">
+      <div class="glass rv">
+        <h4>Thermofluids &amp; propulsion</h4>
+        <ul>
+          <li><b>Heat Transfer – An Engineering Approach</b><span>Udemy · Jul 2023</span></li>
+          <li><b>Sports and Building Aerodynamics</b><span>Coursera · Jan 2024</span></li>
+          <li><b>Statistical Thermodynamics</b><em>Ideal Gases · Dense Gases, Liquids and Solids · Non-Equilibrium Applications · Statistical Thermodynamics</em><span>Coursera · 4 courses · Feb – Mar 2024</span></li>
+          <li><b>Fundamentals of Macroscopic and Microscopic Thermodynamics</b><span>Coursera · Oct 2023</span></li>
+          <li><b>Fundamentals of Fluid Power</b><span>Coursera · Oct 2023</span></li>
+          <li><b>Rocket Engineering and Interstellar Space Propulsion</b><span>Udemy · Apr 2023</span></li>
+          <li><b>Introduction to Thermodynamics: Transferring Energy from Here to There</b><span>Coursera · Jun 2022</span></li>
+        </ul>
+      </div>
+      <div class="glass rv">
+        <h4>Mechanics &amp; dynamics</h4>
+        <ul>
+          <li><b>Advanced Engineering Systems in Motion: Dynamics of 3D Motion</b><span>Coursera · Mar 2025</span></li>
+          <li><b>Applications in Engineering Mechanics</b><span>Coursera · Nov 2023</span></li>
+          <li><b>Quantum Mechanics</b><span>Coursera · Oct 2023</span></li>
+          <li><b>Introduction to Engineering Mechanics</b><span>Coursera · Apr 2023</span></li>
+        </ul>
+      </div>
+      <div class="glass rv">
+        <h4>Engineering software</h4>
+        <ul>
+          <li><b>MATLAB Onramp</b><span>MathWorks · Nov 2025</span></li>
+          <li><b>CATIA</b><span>Internshala · Jun 2022</span></li>
+          <li><b>Autodesk Certified Professional: AutoCAD for Design and Drafting (exam prep)</b><span>Coursera · Sep 2020</span></li>
+        </ul>
+      </div>
+      <div class="glass rv">
+        <h4>Language &amp; communication</h4>
+        <ul>
+          <li><b>German A1</b><span>Goethe-Institut · Jul 2024</span></li>
+          <li><b>Communication Masterclass</b><span>Think School · Apr 2024</span></li>
+          <li><b>IELTS</b><span>IDP · Jun 2023</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <section id="contact" class="section contact">
-    <p class="label">05 — Contact</p>
+    <p class="label">06 — Contact</p>
     <h2 class="huge">Get in <span class="grad">touch.</span></h2>
     <p class="contact-lede">Open to master's thesis projects and graduate roles in CFD, turbomachinery and thermal systems in Sweden.</p>
     <a class="mail glass" href="mailto:rajmayilsamy@gmail.com"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg> rajmayilsamy@gmail.com</a>
@@ -133,6 +176,6 @@
 
 <footer><span>© <span id="yr"></span> Rajesh Mayilsamy</span><span class="mono">MSc Aeronautical Engineering · Linköping University</span></footer>
 
-<script type="module" src="main.js?v=14"></script>
+<script type="module" src="main.js?v=17"></script>
 </body>
 </html>
