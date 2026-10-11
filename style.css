@@ -64,10 +64,9 @@ main{position:relative;z-index:2}
 .btn.ghost{border:1px solid var(--stroke);background:var(--glass);backdrop-filter:blur(16px);color:var(--fg)}
 .btn.ghost:hover{border-color:var(--lilac);color:var(--lilac);transform:translateY(-3px)}
 
-/* the sphere the airflow bends around; main.js reads its rect to place the obstacle */
-.orb{width:clamp(125px,14.5vw,205px);aspect-ratio:1;border-radius:50%;margin:1.5rem auto;pointer-events:none;
-  background:radial-gradient(circle at 38% 32%,#fff 2%,rgba(233,224,255,.95) 14%,rgba(183,156,255,.85) 38%,rgba(118,78,214,.75) 62%,rgba(74,45,148,.6) 82%,rgba(42,22,92,.35) 100%);
-  box-shadow:0 0 90px -10px rgba(139,92,246,.75),0 24px 60px -18px rgba(0,0,0,.8),inset -14px -18px 40px rgba(28,14,64,.55)}
+/* layout spacer for the body; main.js reads its rect and draws the sphere -> airfoil on #body */
+.orb{width:clamp(125px,14.5vw,205px);aspect-ratio:1;margin:1.5rem auto;pointer-events:none}
+#body{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 
 /* about */
 .about{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:start}
@@ -141,8 +140,33 @@ h2{font-weight:500;font-size:clamp(1.9rem,4vw,3.3rem);line-height:1.1;letter-spa
 .contact-lede{max-width:36rem;margin:0 auto 2.2rem;color:#c4bed6;font-size:clamp(1rem,1.4vw,1.15rem)}
 .mail{display:inline-flex;gap:.8rem;align-items:center;padding:1.1rem 2rem;border-radius:100px;font-size:clamp(1rem,3vw,1.5rem);transition:.3s}
 .mail:hover{border-color:var(--lilac);box-shadow:0 0 60px -10px var(--purple);transform:translateY(-3px)}
-.links{display:flex;justify-content:center;align-items:center;gap:2rem;margin-top:2rem;flex-wrap:wrap}
-.links a{color:var(--mut);transition:.2s}.links a:hover{color:var(--lilac)}
+/* contact row: LinkedIn, Resume (+ download) and location, each a glass pill like the email button */
+.links{display:flex;justify-content:center;align-items:center;gap:.8rem;margin-top:1.4rem;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem 1.35rem;border-radius:100px;font-size:.95rem;color:var(--fg);transition:.3s}
+.pill svg{width:1.1em;height:1.1em;flex:none}
+a.pill:hover,.pill.pair:hover{border-color:var(--lilac);box-shadow:0 0 40px -12px var(--purple);transform:translateY(-3px)}
+a.pill:hover{color:var(--lilac)}
+.pill.pair{padding:0;gap:0;overflow:hidden}
+.pair .pl{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem 1.1rem .7rem 1.35rem;transition:color .2s}
+.pair .pl:hover{color:var(--lilac)}
+.pair .dl-ico{display:grid;place-items:center;align-self:stretch;padding:0 1.05rem;border-left:1px solid var(--stroke);transition:.2s}
+.pair .dl-ico:hover{color:var(--lilac);background:rgba(255,255,255,.06)}
+.pill.loc{color:var(--mut)}
+.paper-link{color:var(--lilac);margin-left:.15rem}.paper-link:hover{text-decoration:underline}
+
+/* "How this page works" tab */
+.how-wrap{max-width:46rem;margin:0 auto;padding:0 clamp(1.2rem,6vw,6rem) 4rem}
+.how{border-radius:22px;overflow:hidden}
+.how summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.1rem 1.5rem;font-weight:500;font-size:.98rem;transition:color .2s}
+.how summary::-webkit-details-marker{display:none}
+.how summary:hover{color:var(--lilac)}
+.how summary i{width:.55rem;height:.55rem;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .3s;flex:none}
+.how[open] summary i{transform:rotate(225deg) translateY(-2px)}
+.how-body{padding:0 1.5rem 1.4rem;border-top:1px solid var(--stroke)}
+.how-body p{color:#c4bed6;font-size:.93rem;margin-top:1rem}
+.how-body b{color:var(--fg);font-weight:500}
+#visits:not([hidden]){display:inline}
+#visits::before{content:" · "}
 footer{position:relative;z-index:2;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding:2rem clamp(1.2rem,6vw,6rem);border-top:1px solid var(--stroke);color:var(--mut);font-size:.85rem;background:rgba(10,8,13,.6)}
 
 .rv{opacity:0;transform:translateY(40px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1),border-color .3s}

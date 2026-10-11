@@ -12,10 +12,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=30">
 </head>
 <body>
 <canvas id="flow" aria-hidden="true"></canvas>
+<canvas id="body" aria-hidden="true"></canvas>
 <div class="vignette" aria-hidden="true"></div>
 
 <header class="nav">
@@ -118,7 +119,7 @@
     <div class="glass pub rv">
       <p class="label">Publication</p>
       <p class="pub-title">“Conceptual Design and Contour Optimization of Altitude Compensation Nozzles for SSTO Vehicle”</p>
-      <p>AIAA Propulsion and Energy Forum (2020) · AIAA 2020-3922</p>
+      <p>AIAA Propulsion and Energy Forum (2020) · AIAA 2020-3922 · <a class="paper-link" href="https://arc.aiaa.org/doi/10.2514/6.2020-3922" target="_blank" rel="noopener">Read the paper ↗</a></p>
     </div>
   </section>
 
@@ -170,12 +171,30 @@
     <h2 class="huge">Get in <span class="grad">touch.</span></h2>
     <p class="contact-lede">Open to master's thesis projects and graduate roles in CFD, turbomachinery and thermal systems in Sweden.</p>
     <a class="mail glass" href="mailto:rajmayilsamy@gmail.com"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg> rajmayilsamy@gmail.com</a>
-    <div class="links"><a href="https://www.linkedin.com/in/Rajesh-Mayilsamy" target="_blank" rel="noopener">LinkedIn ↗</a><a href="assets/Rajesh_Mayilsamy_CV.pdf" target="_blank" rel="noopener">Resume ↗</a><span class="mono">Linköping, Sweden</span></div>
+    <div class="links">
+      <a class="pill glass" href="https://www.linkedin.com/in/Rajesh-Mayilsamy" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4V21H3V9.75zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.78-2.05 4.04 0 4.86 2.66 4.86 6.12V21h-4v-5.1c0-1.22-.02-2.78-1.7-2.78-1.7 0-1.96 1.32-1.96 2.69V21h-4V9.75z"/></svg>LinkedIn <span>↗</span></a>
+      <span class="pill glass pair"><a class="pl" href="assets/Rajesh_Mayilsamy_CV.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a1.5 1.5 0 0 0-1.5 1.5v15A1.5 1.5 0 0 0 7 21h10a1.5 1.5 0 0 0 1.5-1.5V7.5L14 3z"/><path d="M14 3v4.5h4.5M9 12.5h6M9 16h6"/></svg>Resume <span>↗</span></a><a class="dl-ico" href="assets/Rajesh_Mayilsamy_CV.pdf" download="Rajesh_Mayilsamy_CV.pdf" aria-label="Download CV (PDF)" title="Download CV (PDF)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg></a></span>
+      <span class="pill glass loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Linköping, Sweden</span>
+    </div>
+  </section>
+
+  <section class="how-wrap">
+    <details class="how glass">
+      <summary><span>How this page works</span><i aria-hidden="true"></i></summary>
+      <div class="how-body">
+        <p><b>The glowing shape and the purple streaks.</b> The shape sits in a stream of air, and every streak is one tiny particle being carried along by it. The particles follow the maths engineers use for ideal airflow, so the air bends around the shape the way real air would.</p>
+        <p><b>Why the shape keeps changing.</b> It turns from a sphere into a wing section, a turbine blade, an F1 car, a diamond and a wedge, then back to the sphere. The computer works out the airflow again around each new shape many times a second, so the streaks always flow around whatever is on screen. On the wing and the blade the air leaves the sharp back edge smoothly, and that is what creates lift.</p>
+        <p><b>Your cursor.</b> It acts as a small obstacle, so you can push the air around yourself.</p>
+        <p><b>What it leaves out.</b> Real air has friction and turbulence. This is the clean, ideal version, the first thing a CFD course teaches and the baseline that full simulations get compared against.</p>
+        <p><b>How it is made.</b> Plain HTML, CSS and JavaScript, with no frameworks and no 3D libraries. The airflow calculation is written from scratch, and the F1 outline is traced from a side-view drawing.</p>
+        <p class="how-priv" hidden><b>Visit counting.</b> The site counts visits anonymously, with no cookies and no personal data.</p>
+      </div>
+    </details>
   </section>
 </main>
 
-<footer><span>© <span id="yr"></span> Rajesh Mayilsamy</span><span class="mono">MSc Aeronautical Engineering · Linköping University</span></footer>
+<footer><span>© <span id="yr"></span> Rajesh Mayilsamy</span><span class="mono">MSc Aeronautical Engineering · Linköping University<span id="visits" hidden></span></span></footer>
 
-<script type="module" src="main.js?v=17"></script>
+<script type="module" src="main.js?v=30"></script>
 </body>
 </html>

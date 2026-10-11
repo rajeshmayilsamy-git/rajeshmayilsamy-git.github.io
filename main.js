@@ -1,3 +1,5 @@
+import { Body, SHAPES, LIFT, blend, M } from './flow.js?v=29';
+
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -42,6 +44,24 @@ $$('.tilt').forEach(card => {
   card.addEventListener('pointerleave', () => card.style.transform = '');
 });
 
+/* ---------- visit analytics: GoatCounter (free, no cookies, no personal data) ----------
+   Paste your GoatCounter site code between the quotes to switch it on, e.g. 'rajesh' for
+   rajesh.goatcounter.com. While it is empty the page makes no analytics requests at all.
+   To show the visit total in the footer, also enable "Allow adding visitor counts on your
+   website" in the GoatCounter settings. */
+const GOATCOUNTER = '';
+if (GOATCOUNTER) {
+  const s = document.createElement('script');
+  s.async = true; s.src = 'https://gc.zgo.at/count.js';
+  s.dataset.goatcounter = `https://${GOATCOUNTER}.goatcounter.com/count`;
+  document.head.appendChild(s);
+  const priv = $('.how-priv'); if (priv) priv.hidden = false;
+  fetch(`https://${GOATCOUNTER}.goatcounter.com/counter/TOTAL.json`)
+    .then(r => r.ok ? r.json() : null)
+    .then(j => { const el = $('#visits'); if (j && j.count && el) { el.textContent = `${j.count} visits`; el.hidden = false; } })
+    .catch(() => {});                                     // blocked or not enabled: show nothing
+}
+
 /* ---------- pointer + scroll state ---------- */
 const ptr = { x: 0, y: 0, px: innerWidth * .5, py: innerHeight * .5, active: false };
 addEventListener('pointermove', e => {
@@ -65,50 +85,103 @@ const orb = $('#orb');
   })(performance.now());
 })();
 
-/* ============================================================
-   Background: potential flow past the sphere.
 
-   Each obstacle is a doublet in a uniform stream — the textbook
-   flow past a cylinder. Potential flow is linear, so the two
-   obstacles (the sphere, and a smaller one at the cursor) are
-   just superposed.
+/* ============================================================
+   Background: potential flow past a body that morphs
+   sphere -> airfoil -> turbine blade -> F1 car -> small rhombus -> small wedge -> sphere.
+
+   The air is the exact potential flow around whatever shape is on
+   screen, re-solved every frame while it morphs (a panel method —
+   see flow.js). Circulation is applied only while the body is an
+   airfoil (the Kutta condition), so the flow leaves its sharp
+   trailing edge smoothly, and fades out as it becomes a bluff body.
+   The cursor adds a small cylinder on top (superposition).
    ============================================================ */
 (() => {
   const cv = $('#flow'), ctx = cv.getContext('2d');
+  const bc = $('#body'), bx = bc.getContext('2d');
   let parts = [];
-  const U = 2.4, CURSOR_R = 55;
-  // Each particle keeps its own short trail and the canvas is cleared every
+  const U = 2.4, CURSOR_R = 55, TRAIL = 14;
+
+  // Each particle keeps its own short trail and the canvases are cleared every
   // frame. (Fading with a translucent overlay instead leaves permanent faint
   // streaks: 8-bit colour can't decay the last few levels to true black.)
-  const TRAIL = 14;
   const spawn = any => {
     const x = any ? Math.random() * innerWidth : -10, y = Math.random() * innerHeight;
     return { x, y, life: Math.random() * 300, tx: new Float32Array(TRAIL).fill(x), ty: new Float32Array(TRAIL).fill(y), head: 0, sp: 1 };
   };
   function resize() {
     const dpr = Math.min(devicePixelRatio || 1, 2);
-    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    parts = Array.from({ length: Math.min(900, Math.floor(innerWidth * innerHeight / 2000)) }, () => spawn(true));
+    for (const [c, x] of [[cv, ctx], [bc, bx]]) {
+      c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+      x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    parts = Array.from({ length: Math.min(800, Math.floor(innerWidth * innerHeight / 2200)) }, () => spawn(true));
   }
   addEventListener('resize', resize); resize();
 
-  // the sphere's live position on screen, re-read each frame so it tracks
-  // the drift, the bob and the page scroll
-  const ball = { x: -9999, y: -9999, r: 0 };
-  function readBall() {
-    if (!orb) return;
-    const b = orb.getBoundingClientRect();
-    if (b.width === 0 || b.bottom < -200 || b.top > innerHeight + 200) { ball.r = 0; return; }
-    ball.x = b.left + b.width / 2;
-    ball.y = b.top + b.height / 2;
-    ball.r = b.width * .48;
+  /* ---- timeline: hold each shape, then ease into the next ---- */
+  const body = new Body(), cur = new Float64Array(2 * M);
+  const HOLD = 2000, MORPH = 1800, HOLD0 = 1400, SEG = HOLD + MORPH, COUNT = SHAPES.length;
+  const T0 = performance.now() + (HOLD0 - HOLD);   // the first hold (sphere) lasts HOLD0, not HOLD
+  const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+  let lastIdx = -1, lastK = -1, halfW = 1;
+  function update(now) {
+    let idx = 1, k = 0, w = 1;                                    // reduced motion: hold the airfoil
+    if (!reduce) {
+      const t = Math.max(now - T0, 0), l = t % SEG;
+      idx = Math.floor(t / SEG) % COUNT;
+      k = l < HOLD ? 0 : ease((l - HOLD) / MORPH);
+      const a = LIFT[idx], b = LIFT[(idx + 1) % COUNT];
+      w = a + (b - a) * k;                                        // circulation only on sharp-trailing-edge bodies
+    }
+    if (idx === lastIdx && k === lastK) return;
+    lastIdx = idx; lastK = k;
+    blend(SHAPES[idx], SHAPES[(idx + 1) % COUNT], k, cur);
+    body.set(cur, w);
+    halfW = 0; for (let i = 0; i < M; i++) halfW = Math.max(halfW, Math.abs(cur[2 * i]));
   }
 
-  let cx = innerWidth * .5, cy = innerHeight * .5;
-  (function draw() {
-    readBall();
-    cx += (ptr.px - cx) * .14; cy += (ptr.py - cy) * .14;
+  /* ---- where the body sits on screen (re-read each frame: drift, bob, scroll) ---- */
+  const g = { x: 0, y: 0, c: 1, on: false };
+  function place() {
+    g.on = false;
+    if (!orb) return;
+    const b = orb.getBoundingClientRect();
+    if (b.width === 0 || b.bottom < -300 || b.top > innerHeight + 300) return;
+    g.c = b.width / 2; g.x = b.left + g.c; g.y = b.top + b.height / 2; g.on = true;
+  }
+
+  function drawBody() {
+    bx.clearRect(0, 0, innerWidth, innerHeight);
+    if (!g.on) return;
+    const c = g.c;
+    bx.beginPath();
+    for (let i = 0; i < M; i++) {
+      const X = g.x + cur[2 * i] * c, Y = g.y - cur[2 * i + 1] * c;
+      i ? bx.lineTo(X, Y) : bx.moveTo(X, Y);
+    }
+    bx.closePath();
+    const spread = Math.min(Math.max(halfW - 1, 0), 1);
+    const grad = bx.createRadialGradient(g.x - c * .35, g.y - c * .45, 0, g.x - c * .2, g.y - c * .2, c * (1.4 + 1.7 * spread));
+    grad.addColorStop(0, '#ffffff');
+    grad.addColorStop(.12, 'rgba(233,224,255,.96)');
+    grad.addColorStop(.38, 'rgba(183,156,255,.92)');
+    grad.addColorStop(.66, 'rgba(118,78,214,.9)');
+    grad.addColorStop(1, 'rgba(58,30,124,.95)');
+    bx.save();
+    bx.shadowColor = 'rgba(139,92,246,.75)';
+    bx.shadowBlur = 70;
+    bx.fillStyle = grad;
+    bx.fill();
+    bx.restore();
+  }
+
+  let mx = innerWidth * .5, my = innerHeight * .5;
+  (function draw(now) {
+    update(now);
+    place();
+    mx += (ptr.px - mx) * .14; my += (ptr.py - my) * .14;
 
     ctx.clearRect(0, 0, innerWidth, innerHeight);
     ctx.lineWidth = 1;
@@ -116,14 +189,12 @@ const orb = $('#orb');
 
     for (const p of parts) {
       let u = U, v = 0, inside = false;
-
-      if (ball.r > 0) {
-        const dx = p.x - ball.x, dy = p.y - ball.y, r2 = dx * dx + dy * dy;
-        if (r2 < ball.r * ball.r) inside = true;
-        else { const k = ball.r * ball.r / (r2 * r2); u -= U * k * (dx * dx - dy * dy); v -= U * k * 2 * dx * dy; }
+      if (g.on) {
+        if (body.vel((p.x - g.x) / g.c, (g.y - p.y) / g.c)) { u = body.u * U; v = -body.v * U; }
+        else inside = true;
       }
       if (ptr.active && !inside) {
-        const dx = p.x - cx, dy = p.y - cy, r2 = dx * dx + dy * dy;
+        const dx = p.x - mx, dy = p.y - my, r2 = dx * dx + dy * dy;
         if (r2 < CURSOR_R * CURSOR_R) inside = true;
         else { const k = CURSOR_R * CURSOR_R / (r2 * r2); u -= U * k * (dx * dx - dy * dy); v -= U * k * 2 * dx * dy; }
       }
@@ -134,7 +205,6 @@ const orb = $('#orb');
       p.tx[p.head] = p.x; p.ty[p.head] = p.y;
       p.sp += (Math.min(Math.hypot(u, v) / U, 2) - p.sp) * .2;
 
-      // trail from oldest to newest point
       ctx.strokeStyle = `hsla(${268 + p.sp * 34},95%,${64 + p.sp * 6}%,${.14 + p.sp * .18})`;
       ctx.beginPath();
       let i = (p.head + 1) % TRAIL;
@@ -146,6 +216,7 @@ const orb = $('#orb');
         Object.assign(p, spawn(false), { life: 0 });
       }
     }
+    drawBody();
     requestAnimationFrame(draw);
-  })();
+  })(performance.now());
 })();
