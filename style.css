@@ -192,3 +192,10 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;fl
   .hello>*,.role>*,.hero-cta{opacity:1}
   .rv{opacity:1;transform:none}
 }
+
+/* hover note on the glowing shape */
+.shape-tip{position:fixed;left:0;top:0;z-index:80;width:max-content;max-width:min(19rem,calc(100vw - 24px));padding:.8rem 1rem;border-radius:16px;pointer-events:none;opacity:0;visibility:hidden;transform:translate3d(-999px,-999px,0);transition:opacity .18s,visibility .18s;font-size:.85rem;line-height:1.5}
+.shape-tip.on{opacity:1;visibility:visible}
+.shape-tip b{display:block;font-weight:600;font-size:.92rem;margin-bottom:.15rem}
+.shape-tip span{display:block;color:#c4bed6}
+html.shape-hover{cursor:help}

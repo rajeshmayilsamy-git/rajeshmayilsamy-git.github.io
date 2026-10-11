@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=30">
+<link rel="stylesheet" href="style.css?v=33">
 </head>
 <body>
 <canvas id="flow" aria-hidden="true"></canvas>
@@ -60,8 +60,8 @@
     <div class="about">
       <h2>Aeronautical engineer focused on <span class="grad">computational fluid dynamics</span>, turbomachinery and aircraft design.</h2>
       <div class="glass panel">
-        <p>I'm an MSc student in Aeronautical Engineering at <strong>Linköping University</strong> (fluid mechanics track), specialising in aerodynamics, CFD and propulsion. I run LES and RANS on HPC clusters, validate against DNS and reference data, and design aircraft on paper before anyone cuts metal.</p>
-        <p>I started with a BE in Aeronautical Engineering in Coimbatore, did CFD and CAE internships, co-authored an AIAA paper on nozzle design, then spent three years managing production at a garments firm, which taught me quality, deadlines and how to coordinate people. Now I'm back full-time in the thing I love: fluids.</p>
+        <p>I am an MSc student in Aeronautical Engineering at <strong>Linköping University</strong> (fluid mechanics track), specialising in aerodynamics, computational fluid dynamics and propulsion. My project work includes large-eddy simulation on HPC clusters, validation against DNS and reference data, and conceptual aircraft design.</p>
+        <p>I hold a BE in Aeronautical Engineering from Kumaraguru College of Technology, Coimbatore, with CFD and CAE internships and a co-authored AIAA paper on nozzle design. From 2022 to 2025 I worked as a production manager at a garment manufacturer, which gave me experience in quality control, delivery planning and coordinating teams. I am now focused full-time on fluid dynamics and thermal systems.</p>
         <p class="open"><i></i> Open to thesis projects and graduate roles in CFD, turbomachinery and thermal systems in Sweden.</p>
       </div>
     </div>
@@ -183,7 +183,7 @@
       <summary><span>How this page works</span><i aria-hidden="true"></i></summary>
       <div class="how-body">
         <p><b>The glowing shape and the purple streaks.</b> The shape sits in a stream of air, and every streak is one tiny particle being carried along by it. The particles follow the maths engineers use for ideal airflow, so the air bends around the shape the way real air would.</p>
-        <p><b>Why the shape keeps changing.</b> It turns from a sphere into a wing section, a turbine blade, an F1 car, a diamond and a wedge, then back to the sphere. The computer works out the airflow again around each new shape many times a second, so the streaks always flow around whatever is on screen. On the wing and the blade the air leaves the sharp back edge smoothly, and that is what creates lift.</p>
+        <p><b>Why the shape keeps changing.</b> It turns from a sphere into a wing section, a turbine blade, a jet-engine nacelle, a rocket with a bell nozzle, an F1 car, a diamond and a wedge, then back to the sphere. The computer works out the airflow again around each new shape many times a second, so the streaks always flow around whatever is on screen. Hover over the shape, or tap it on a phone, to see what it is. On the wing and the blade the air leaves the sharp back edge smoothly, and that is what creates lift.</p>
         <p><b>Your cursor.</b> It acts as a small obstacle, so you can push the air around yourself.</p>
         <p><b>What it leaves out.</b> Real air has friction and turbulence. This is the clean, ideal version, the first thing a CFD course teaches and the baseline that full simulations get compared against.</p>
         <p><b>How it is made.</b> Plain HTML, CSS and JavaScript, with no frameworks and no 3D libraries. The airflow calculation is written from scratch, and the F1 outline is traced from a side-view drawing.</p>
@@ -195,6 +195,7 @@
 
 <footer><span>© <span id="yr"></span> Rajesh Mayilsamy</span><span class="mono">MSc Aeronautical Engineering · Linköping University<span id="visits" hidden></span></span></footer>
 
-<script type="module" src="main.js?v=30"></script>
+<div class="shape-tip glass" id="shapeTip" role="tooltip" aria-hidden="true"><b></b><span></span></div>
+<script type="module" src="main.js?v=33"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-import { Body, SHAPES, LIFT, blend, M } from './flow.js?v=29';
+import { Body, SHAPES, LIFT, NAMES, blend, M } from './flow.js?v=33';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -88,7 +88,7 @@ const orb = $('#orb');
 
 /* ============================================================
    Background: potential flow past a body that morphs
-   sphere -> airfoil -> turbine blade -> F1 car -> small rhombus -> small wedge -> sphere.
+   sphere -> airfoil -> turbine blade -> engine nacelle -> rocket -> F1 car -> rhombus -> wedge -> sphere.
 
    The air is the exact potential flow around whatever shape is on
    screen, re-solved every frame while it morphs (a panel method —
@@ -152,6 +152,51 @@ const orb = $('#orb');
     g.c = b.width / 2; g.x = b.left + g.c; g.y = b.top + b.height / 2; g.on = true;
   }
 
+  /* ---- hover note: what is this shape? ----
+     Hovering the glowing body (or tapping it on a touch screen) shows its name and a one-line note.
+     The pointer is tested against the live outline, so it also works mid-morph. */
+  const INFO = {
+    sphere:  ['Sphere', 'The textbook starting point: the air splits at the front and rejoins behind it, and there is no lift.'],
+    airfoil: ['Airfoil (a wing section)', 'A Joukowski airfoil at 6° to the wind. The air leaves the sharp back edge smoothly, which is what creates lift.'],
+    blade:   ['Turbine blade', 'A curved, thick-nosed blade like those in a compressor or turbine. It turns the air, and like the wing it carries lift.'],
+    nacelle: ['Jet-engine nacelle', 'The outer cowl of a turbofan engine, hanging from its pylon. Only the outside is modelled, not the intake or the bypass duct.'],
+    rocket:  ['Rocket with a bell nozzle', 'Pointed nose cone, tail fins, and the flared bell of the engine. The air parts at the nose and closes up behind the bell.'],
+    f1:      ['Formula 1 car', 'Side view, traced from a drawing. The tyres stick out above and below the bodywork, as on the real car.'],
+    rhombus: ['Rhombus (a diamond)', 'A sharp-cornered body. The air speeds up as it goes round the side corners.'],
+    wedge:   ['Wedge (a triangle)', 'Pointed into the wind with a flat back. The air speeds up round the back corners.']
+  };
+  const tip = $('#shapeTip'), tipTitle = tip && tip.querySelector('b'), tipNote = tip && tip.querySelector('span');
+  const canHover = matchMedia('(hover: hover)').matches;
+  let tapUntil = 0, tipKey = '', tipW = 0, tipH = 0;
+  addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'touch') return;
+    ptr.px = e.clientX; ptr.py = e.clientY; ptr.active = true; tapUntil = performance.now() + 2800;
+  }, { passive: true });
+  function hoverTip(now) {
+    if (!tip) return;
+    let show = false;
+    if (g.on && ptr.active && scrollY < innerHeight * .6 && (canHover || now < tapUntil)) {
+      const bx = (ptr.px - g.x) / g.c, by = (g.y - ptr.py) / g.c, d = 5 / g.c;      // a few pixels of slack round the edge
+      show = body.inside(bx, by) || body.inside(bx + d, by) || body.inside(bx - d, by) || body.inside(bx, by + d) || body.inside(bx, by - d);
+      if (show) {                                                                  // not if something on the page sits on top of it
+        const el = document.elementFromPoint(ptr.px, ptr.py);
+        if (el && el.closest('.glass, .card, a, button, nav, header, footer, aside, summary')) show = false;
+      }
+    }
+    document.documentElement.classList.toggle('shape-hover', show);
+    tip.classList.toggle('on', show);
+    if (!show) return;
+    const a = lastIdx, b = (lastIdx + 1) % COUNT, k = lastK;
+    let title, note;
+    if (k < .08) [title, note] = INFO[NAMES[a]];
+    else if (k > .92) [title, note] = INFO[NAMES[b]];
+    else { title = `${INFO[NAMES[a]][0]} → ${INFO[NAMES[b]][0]}`; note = 'Morphing: the air is worked out again around every in-between shape.'; }
+    const key = title;
+    if (key !== tipKey) { tipKey = key; tipTitle.textContent = title; tipNote.textContent = note; tipW = tip.offsetWidth; tipH = tip.offsetHeight; }
+    const x = Math.min(ptr.px + 18, innerWidth - tipW - 12), y = ptr.py + 22 + tipH > innerHeight - 8 ? ptr.py - tipH - 14 : ptr.py + 22;
+    tip.style.transform = `translate3d(${Math.max(12, x).toFixed(0)}px,${Math.max(8, y).toFixed(0)}px,0)`;
+  }
+
   function drawBody() {
     bx.clearRect(0, 0, innerWidth, innerHeight);
     if (!g.on) return;
@@ -181,6 +226,7 @@ const orb = $('#orb');
   (function draw(now) {
     update(now);
     place();
+    hoverTip(now);
     mx += (ptr.px - mx) * .14; my += (ptr.py - my) * .14;
 
     ctx.clearRect(0, 0, innerWidth, innerHeight);

@@ -175,12 +175,64 @@ const F1_TRACE = [
 
 const f1Car = () => resample(F1_TRACE);
 
-export const NAMES = ['sphere', 'airfoil', 'blade', 'f1', 'rhombus', 'wedge'];
-export const LIFT = [0, 1, 1, 0, 0, 0];          // bodies with a sharp trailing edge carry circulation (Kutta)
+/* Catmull-Rom curve through the control points (it passes through every one of them) */
+const spline = (pts, seg) => {
+  const P = i => pts[Math.max(0, Math.min(pts.length - 1, i))], out = [];
+  for (let i = 0; i < pts.length - 1; i++) for (let k = 0; k < seg; k++) {
+    const t = k / seg, t2 = t * t, t3 = t2 * t, a = P(i - 1), b = P(i), c = P(i + 1), d = P(i + 2);
+    const f = (p0, p1, p2, p3) => .5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
+    out.push([f(a[0], b[0], c[0], d[0]), f(a[1], b[1], c[1], d[1])]);
+  }
+  out.push(pts[pts.length - 1]);
+  return out;
+};
+
+/* Rocket with a bell nozzle, side view, nose into the wind. A tangent-ogive nose cone, a
+   cylindrical body, two swept tail fins (seen in profile, top and bottom), a short tapered
+   engine skirt, and the flared bell: the wall leaves the throat steeply and then straightens, as
+   a real bell contour does. Solid outer outline only (the bell's inside is not modelled).
+   Symmetric about the axis, 3.8 units long, 0.6 across the body. */
+function rocket() {
+  const L = 3.8, R = .30, NL = 1.0;
+  const rho = (R * R + NL * NL) / (2 * R);                         // tangent-ogive radius of curvature
+  const top = [];
+  for (let i = 0; i <= 36; i++) { const x = NL * i / 36; top.push([x, Math.sqrt(Math.max(rho * rho - (NL - x) ** 2, 0)) + R - rho]); }
+  top.push([2.45, R]);                                             // end of the plain body: root of the fin's leading edge
+  top.push([2.85, .52], [3.00, .52]);                              // the fin: swept leading edge, then the tip chord
+  top.push([3.00, R - (R - .13) * (3.00 - 2.9) / (3.15 - 2.9)]);   // trailing edge drops back onto the engine skirt
+  top.push([3.15, .13]);                                           // the throat, the narrowest point of the engine
+  const rt = .13, re = .26;
+  for (let i = 1; i <= 26; i++) { const t = i / 26; top.push([3.15 + (L - 3.15) * t, rt + (re - rt) * Math.pow(t, .55)]); }   // the bell
+  const pts = [[L, 0], ...top.slice().reverse(), ...top.slice(1).map(([x, y]) => [x, -y])];                          // rear -> top -> nose -> bottom
+  return resample(centred(pts));
+}
+
+/* Turbofan engine nacelle on its pylon, side view, inlet into the wind. The inlet face with a
+   rounded lip, the fan cowl swelling to its widest point and tapering to the fan nozzle, the
+   narrower core cowl carrying on behind it, the exhaust cone, and the pylon that holds the engine
+   up to the wing. Solid outer outline only (the intake and the bypass duct are not modelled). */
+function nacelle() {
+  // fan cowl, upper and lower lines. The inlet face is raked: the lower lip sits forward of the upper one,
+  // as on a real nacelle, and the lips are well rounded.
+  const upper = spline([[.09, .42], [.12, .47], [.19, .515], [.32, .545], [.55, .565], [.85, .55], [1.20, .515], [1.55, .45], [1.80, .40]], 10);
+  const lower = spline([[0, -.42], [.03, -.47], [.11, -.515], [.27, -.548], [.50, -.565], [.80, -.555], [1.20, -.52], [1.55, -.45], [1.80, -.40]], 10);
+  const topSide = [...upper.filter(p => p[0] <= .90),               // lip -> widest point -> start of the pylon
+    [1.32, .80], [1.92, .80],                                       // pylon: swept leading edge, flat top
+    [2.00, .23],                                                    // steep trailing edge back onto the core cowl
+    [2.16, .18], [2.20, .13], [2.55, 0]];                           // core nozzle lip, then the exhaust cone to its tip
+  const under = [...lower, [1.80, -.27], [1.95, -.25], [2.05, -.23], [2.16, -.18], [2.20, -.13]];
+  const pts = [...topSide.slice().reverse(), ...under];             // cone tip -> over the top -> inlet face -> underneath
+  return resample(centred(pts));
+}
+
+export const NAMES = ['sphere', 'airfoil', 'blade', 'nacelle', 'rocket', 'f1', 'rhombus', 'wedge'];
+export const LIFT = [0, 1, 1, 0, 0, 0, 0, 0];    // bodies with a sharp trailing edge carry circulation (Kutta)
 export const SHAPES = [
   circle(),
   airfoil(),
   turbineBlade(),
+  nacelle(),
+  rocket(),
   f1Car(),
   resample([[1.01, 0], [0, .64], [-1.01, 0], [0, -.64]]),                   // rhombus (75 % size)
   resample([[.66, 0], [.66, .77], [-.66, 0], [.66, -.77]])                  // small wedge, apex into the wind
