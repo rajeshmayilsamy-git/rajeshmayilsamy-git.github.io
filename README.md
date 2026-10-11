@@ -17,10 +17,11 @@ Plain HTML, CSS and JavaScript. No build step, no frameworks, no 3D libraries: e
 
 ## How the hero works
 
-The glowing body morphs sphere → airfoil → turbine blade → engine nacelle → rocket → F1 car → rhombus → wedge → sphere.
+The glowing body morphs sphere → engine nacelle → SR-71 → rocket → F1 car → airfoil → turbine blade → rhombus → wedge → sphere.
+The order is the loop with the smallest total outline gap between neighbouring shapes, found by comparing every pair; each morph also lines up its start points first.
 Every purple streak is a particle carried by the ideal potential flow around whatever shape is on
 screen. `flow.js` re-solves that flow as the shape morphs; a sharp trailing edge (airfoil, blade)
-gets circulation from the Kutta condition. The F1 outline is traced from a side-view silhouette.
+gets circulation from the Kutta condition. The F1 car and SR-71 outlines are traced from side-view drawings (the SR-71, in top view, from the public-domain US Air Force three-view).
 The same explanation, in plain words, is in the "How this page works" tab on the page. Hovering the shape (or tapping it on a phone) shows its name and a one-line note.
 
 ## Visit analytics

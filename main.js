@@ -1,4 +1,4 @@
-import { Body, SHAPES, LIFT, NAMES, blend, M } from './flow.js?v=33';
+import { Body, SHAPES, LIFT, NAMES, blend, alignTo, M } from './flow.js?v=39';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -88,7 +88,7 @@ const orb = $('#orb');
 
 /* ============================================================
    Background: potential flow past a body that morphs
-   sphere -> airfoil -> turbine blade -> engine nacelle -> rocket -> F1 car -> rhombus -> wedge -> sphere.
+   sphere -> engine nacelle -> SR-71 (top view) -> rocket -> F1 car -> airfoil -> turbine blade -> rhombus -> wedge -> sphere.
 
    The air is the exact potential flow around whatever shape is on
    screen, re-solved every frame while it morphs (a panel method —
@@ -123,11 +123,14 @@ const orb = $('#orb');
   /* ---- timeline: hold each shape, then ease into the next ---- */
   const body = new Body(), cur = new Float64Array(2 * M);
   const HOLD = 2000, MORPH = 1800, HOLD0 = 1400, SEG = HOLD + MORPH, COUNT = SHAPES.length;
+  // each shape morphs into the next one with its points rotated to the best-matching start, so every point slides
+  // to its nearest partner and the transition stays smooth
+  const NEXT = SHAPES.map((s, i) => alignTo(s, SHAPES[(i + 1) % COUNT]));
   const T0 = performance.now() + (HOLD0 - HOLD);   // the first hold (sphere) lasts HOLD0, not HOLD
   const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
   let lastIdx = -1, lastK = -1, halfW = 1;
   function update(now) {
-    let idx = 1, k = 0, w = 1;                                    // reduced motion: hold the airfoil
+    let idx = NAMES.indexOf('airfoil'), k = 0, w = 1;               // reduced motion: hold the airfoil
     if (!reduce) {
       const t = Math.max(now - T0, 0), l = t % SEG;
       idx = Math.floor(t / SEG) % COUNT;
@@ -137,7 +140,7 @@ const orb = $('#orb');
     }
     if (idx === lastIdx && k === lastK) return;
     lastIdx = idx; lastK = k;
-    blend(SHAPES[idx], SHAPES[(idx + 1) % COUNT], k, cur);
+    blend(SHAPES[idx], NEXT[idx], k, cur);
     body.set(cur, w);
     halfW = 0; for (let i = 0; i < M; i++) halfW = Math.max(halfW, Math.abs(cur[2 * i]));
   }
@@ -158,6 +161,7 @@ const orb = $('#orb');
   const INFO = {
     sphere:  ['Sphere', 'The textbook starting point: the air splits at the front and rejoins behind it, and there is no lift.'],
     airfoil: ['Airfoil (a wing section)', 'A Joukowski airfoil at 6° to the wind. The air leaves the sharp back edge smoothly, which is what creates lift.'],
+    sr71:    ['Lockheed SR-71 Blackbird (top view)', 'The Mach 3 spy plane seen from above, traced from the official drawing: the long nose, the delta wings and the twin engines.'],
     blade:   ['Turbine blade', 'A curved, thick-nosed blade like those in a compressor or turbine. It turns the air, and like the wing it carries lift.'],
     nacelle: ['Jet-engine nacelle', 'The outer cowl of a turbofan engine, hanging from its pylon. Only the outside is modelled, not the intake or the bypass duct.'],
     rocket:  ['Rocket with a bell nozzle', 'Pointed nose cone, tail fins, and the flared bell of the engine. The air parts at the nose and closes up behind the bell.'],
